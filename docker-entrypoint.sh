@@ -1,11 +1,16 @@
-#!/bin/sh
+#!/bin/bash
+set -e
 
-if test -f /entrypoint.d/*; then
-    . /entrypoint.d/*
-fi
+initialize_system() {
+    if test -f /entrypoint.d/*; then
+        . /entrypoint.d/*
+    fi
 
-cat << EOF > /var/spool/cron/crontabs/root
-${CRONTAB_ENTRY}
-EOF
+    printenv >>/etc/environment
+    echo -e "${CRONTAB_ENTRY}" | crontab -
+    crontab -l
+}
+
+initialize_system
 
 exec "$@"

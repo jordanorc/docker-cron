@@ -1,10 +1,12 @@
-FROM alpine:3.13.0
+FROM ubuntu:20.04
 
 ENV CRONTAB_ENTRY=""
 
-RUN rm -rf /var/cache/apk/*
+RUN apt update && \
+    apt install -y cron && \
+    rm -rf /var/cache/apt/*
 
 COPY docker-entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["sh", "/entrypoint.sh"]
+ENTRYPOINT ["bash", "/entrypoint.sh"]
 
-CMD ["crond", "-f", "-l", "0"]
+CMD ["cron", "-f"]
